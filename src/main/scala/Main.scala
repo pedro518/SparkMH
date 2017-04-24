@@ -11,6 +11,12 @@ import org.apache.spark.rdd.RDD
 
 object Main {
   def main(args: Array[String]): Unit = {
+
+    if (args.length != 2){
+      println("Uso: JAR <instancia> <numero_soluciones_iniciales>")
+
+      sys.exit()
+    }
     var instancia = new Instance(args(0))
     val simulated_Annealing = new Simulated_Annealing(instancia)
 
