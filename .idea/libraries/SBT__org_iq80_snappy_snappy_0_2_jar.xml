@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="SBT: org.iq80.snappy:snappy:0.2:jar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/jars/org.iq80.snappy/snappy/snappy-0.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/srcs/org.iq80.snappy/snappy/snappy-0.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

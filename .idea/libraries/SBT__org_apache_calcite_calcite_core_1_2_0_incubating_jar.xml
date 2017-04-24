@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="SBT: org.apache.calcite:calcite-core:1.2.0-incubating:jar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/jars/org.apache.calcite/calcite-core/calcite-core-1.2.0-incubating.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/srcs/org.apache.calcite/calcite-core/calcite-core-1.2.0-incubating-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

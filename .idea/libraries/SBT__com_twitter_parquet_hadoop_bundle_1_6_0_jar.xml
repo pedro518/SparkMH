@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="SBT: com.twitter:parquet-hadoop-bundle:1.6.0:jar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/jars/com.twitter/parquet-hadoop-bundle/parquet-hadoop-bundle-1.6.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/srcs/com.twitter/parquet-hadoop-bundle/parquet-hadoop-bundle-1.6.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
