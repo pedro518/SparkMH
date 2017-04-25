@@ -8,8 +8,8 @@ class Solution(var vals: Vector[Int], var cost: Int) extends Serializable {
   def calculate_cost(instancia: Instance): Unit = {
     cost = 0
 
-    for (i <- 0 to instancia.tam-1) {
-      for (j <- 0 to instancia.tam-1) {
+    for (i <- 0 until instancia.tam) {
+      for (j <- 0 until instancia.tam) {
         cost += instancia.flujo(i)(j) * instancia.distancia(vals(i))(vals(j))
       }
     }
@@ -20,7 +20,7 @@ class Solution(var vals: Vector[Int], var cost: Int) extends Serializable {
 
     var deltaC: Int = 0
 
-    for(k <- 0 to instancia.tam-1){
+    for(k <- 0 until instancia.tam){
       if(k!=r && k!= s)
         deltaC += (
           instancia.flujo(r)(k) * (instancia.distancia(vals(s))(vals(k)) - instancia.distancia(vals(r))(vals(k)))
@@ -37,20 +37,15 @@ class Solution(var vals: Vector[Int], var cost: Int) extends Serializable {
   def neightbor(instancia: Instance): Solution = {
     val r = scala.util.Random
     
-    var ale1 = r.nextInt(instancia.tam)
+    val ale1 = r.nextInt(instancia.tam)
     
     var ale2 = r.nextInt(instancia.tam)
       
     while(ale1 == ale2)  
       ale2 = r.nextInt(instancia.tam)
-    
-    var permutacion = vals
-    var aux = permutacion(ale1)
-    permutacion = permutacion.updated(ale1, permutacion(ale2))
-    permutacion = permutacion.updated(ale2, aux)
 
-    var vecino = new Solution(permutacion)
-    vecino.cost = cost + factorize_cost(instancia, ale1, ale2)
+
+    val vecino = neightbor(instancia, ale1, ale2)
     
     vecino    
   }
@@ -58,11 +53,11 @@ class Solution(var vals: Vector[Int], var cost: Int) extends Serializable {
   def neightbor(instancia: Instance, i: Int, j: Int): Solution = {
 
     var permutacion = vals
-    var aux = permutacion(i)
+    val aux = permutacion(i)
     permutacion = permutacion.updated(i, permutacion(j))
     permutacion = permutacion.updated(j, aux)
 
-    var vecino = new Solution(permutacion)
+    val vecino = new Solution(permutacion)
     vecino.cost = cost + factorize_cost(instancia, i, j)
 
     vecino
@@ -71,14 +66,14 @@ class Solution(var vals: Vector[Int], var cost: Int) extends Serializable {
   def neightborhood(instancia: Instance): List[Solution] = {
     val ret = Array.ofDim[Solution](instancia.tam * (instancia.tam - 1) / 2)
     var cont = 0
-    for (i <- 0 to instancia.tam-1) {
-      for (j <- i+1 to instancia.tam-1) {
-        ret(cont) = this.neightbor(instancia, i, j);
+    for (i <- 0 until instancia.tam) {
+      for (j <- i + 1 until instancia.tam) {
+        ret(cont) = this.neightbor(instancia, i, j)
         cont += 1
       }
     }
 
-    ret.toList;
+    ret.toList
   }
 
   override def toString: String = {

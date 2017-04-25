@@ -3,8 +3,6 @@ import org.apache.spark.SparkContext
 import org.apache.spark.SparkConf
 import org.apache.spark.rdd.RDD
 
-
-
 /**
   * Created by Pedro on 30/03/2017.
   */
@@ -17,7 +15,7 @@ object Main {
 
       sys.exit()
     }
-    var instancia = new Instance(args(0))
+    val instancia = new Instance(args(0))
     val simulated_Annealing = new Simulated_Annealing(instancia)
 
 
@@ -26,13 +24,13 @@ object Main {
 
     var now = System.nanoTime
     val search= simulated_Annealing.simulate(instancia.Random_sol())
-    var elapsed1 = (System.nanoTime - now).toFloat/1000000000f
+    val elapsed1 = (System.nanoTime - now).toFloat / 1000000000f
     now = System.nanoTime
     val search_MA= simulated_Annealing.search_MA(sols_ale)
-    var elapsed2 = (System.nanoTime - now).toFloat/1000000000f
+    val elapsed2 = (System.nanoTime - now).toFloat / 1000000000f
     now = System.nanoTime
     val search_MA_REP= simulated_Annealing.search_MA_REP(sols_ale,10)
-    var elapsed3 = (System.nanoTime - now).toFloat/1000000000f
+    val elapsed3 = (System.nanoTime - now).toFloat/1000000000f
 
 
     sc.stop()
@@ -48,7 +46,6 @@ object Main {
     println(search_MA_REP)
     println("Tiempo: " + elapsed3)
 
-    //sc.parallelize(aux).saveAsTextFile("Salida")
 
   }
 }
