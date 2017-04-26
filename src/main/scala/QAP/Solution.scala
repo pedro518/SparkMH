@@ -10,7 +10,7 @@ package QAP
     */
 class Solution(var vals: Vector[Int], var cost: Int) extends Serializable {
 
-  /** Creates a person with a given name and age.
+  /** Crea una solución con su permutación
     *
     *  @param vals Permutación que forma la solución
     */
