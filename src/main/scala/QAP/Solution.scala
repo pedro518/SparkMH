@@ -62,19 +62,17 @@ class Solution(var vals: Vector[Int], var cost: Int) extends Serializable {
     *  @return Una nueva solución vecina a la actual
     */
   def neightbor(instancia: Instance): Solution = {
+
+    // Genero dos numeros aleatorios distintos
     val r = scala.util.Random
-    
     val ale1 = r.nextInt(instancia.tam)
-    
     var ale2 = r.nextInt(instancia.tam)
       
     while(ale1 == ale2)  
       ale2 = r.nextInt(instancia.tam)
 
-
-    val vecino = neightbor(instancia, ale1, ale2)
-    
-    vecino    
+    //devuelvo el vecino generado
+    neightbor(instancia, ale1, ale2)
   }
 
   /** Genera el vecino especificado de esta solución

@@ -2,9 +2,18 @@ package QAP
 
 import org.apache.spark.rdd.RDD
 
-
+/** El algoritmo Simulated Annealing en distintas versiones.
+  * El algorimo base es el del método simulate, utiliza el criterio de aceptación de metrópolis y el esquema de enfriamiento de Cauchy
+  * @param instancia Instancia del problema de la que forma parte la solución
+  *
+  */
 class Simulated_Annealing(val instancia:Instance) extends Serializable {
 
+  /** El algoritmo base  de Simulated Annealing en su versión iterativa.
+    * Utiliza el criterio de aceptación de metrópolis y el esquema de enfriamiento de Cauchy
+    * @param sol_ini Solución desde la que comienza la búsqueda
+    *
+    */
   def simulate( sol_ini: Solution): Solution = {
     // Parámetros iniciales
     var best = sol_ini
@@ -54,38 +63,57 @@ class Simulated_Annealing(val instancia:Instance) extends Serializable {
 
     best
   }
-  
+
+  /** Criterio de aceptación de metróplolis.
+    * El criterio consiste en aceptar una solución si la diferencia de costos entre una solución y su vecina es negativa
+    * o si al generar un número aleatorio entre 0 y 1 este es menor o igual que e**(-de/it*t)
+    * @param de Diferencia entre la solución actual y su vecina
+    * @param t Temperatura actual
+    * @param it Iteración actual
+    *
+    */
   def metrop(de: Float, t:Float, it: Int): Boolean = {
     de < 0.0 || scala.util.Random.nextFloat() <= Math.exp(-de / (it * t))
   }
 
+  /** Simulated Annealing en una versión paralelizada.
+    * Esta versión consiste en dado un conjunto de soluciones iniciales, realizar una búsqueda a cada una de ellas y devolver la mejor de todas.
+    * @param sols_ini RDD con el conjunto de soluciones inciales
+    * @return La mejor solución encontrada
+    *
+    */
   def search_MA(sols_ini: RDD[Solution]): Solution ={
     val search: RDD[Solution] = sols_ini.map(x => this.simulate(x))
 
-    val array_sol = search.collect()
+    val array_sol: Array[Solution] = search.collect()
 
-    val aux = array_sol.sortWith((a,b) => a < b)
+    val aux: Array[Solution] = array_sol.sortWith((a, b) => a < b)
 
     aux(0)
   }
 
-
+  /** Simulated Annealing en una versión paralelizada.
+    * Esta versión consiste en dado un conjunto de soluciones iniciales, realizar una búsqueda a cada una de ellas y quedarse con las 10
+    * mejores encontradas, después usar esas mejores encontradas para repetir el proceso, así como tantas repeticiones se desee.
+    * @param sols_ini RDD con el conjunto de soluciones inciales
+    * @param stop Número de repeticiones deseadas
+    * @return La mejor solución encontrada
+    *
+    */
   def search_MA_REP(sols_ini: RDD[Solution], stop: Int): Solution = {
-    val bests = sols_ini
-    var search = sols_ini
+    var search: RDD[Solution] = sols_ini
 
-    var fin = bests.take(1)
-
+    var mejores: RDD[Solution] = search
     for (_ <- 0 until stop) {
-        search = search.map(x => simulate(x))
+        search = mejores.map(x => simulate(x))
 
-        val mejores = search ++ bests
-        val mejores_ord = mejores.collect().sortWith((a,b) => a < b)
-        val mejores_rdd = mejores.sparkContext.parallelize(mejores_ord)
-        fin = mejores_rdd.take(10)
+        mejores = (search ++ mejores).sortBy(_.cost)
+        val mejores_ok: Array[Solution] = mejores.take(10)
+
+        mejores = mejores.sparkContext.parallelize(mejores_ok)
       }
 
-    fin(0)
+    mejores.first()
 
   }
 }
