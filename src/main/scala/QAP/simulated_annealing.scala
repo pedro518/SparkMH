@@ -83,13 +83,9 @@ class Simulated_Annealing(val instancia:Instance) extends Serializable {
     *
     */
   def search_MA(sols_ini: RDD[Solution]): Solution ={
-    val search: RDD[Solution] = sols_ini.map(x => this.simulate(x))
+    val search: RDD[Solution] = sols_ini.map(x => simulate(x))
 
-    val array_sol: Array[Solution] = search.collect()
-
-    val aux: Array[Solution] = array_sol.sortWith((a, b) => a < b)
-
-    aux(0)
+     search.sortBy(_.cost).first()
   }
 
   /** Simulated Annealing en una versión paralelizada.
@@ -101,15 +97,20 @@ class Simulated_Annealing(val instancia:Instance) extends Serializable {
     *
     */
   def search_MA_REP(sols_ini: RDD[Solution], stop: Int): Solution = {
+    //Inicializo valores
     var search: RDD[Solution] = sols_ini
-
     var mejores: RDD[Solution] = search
+
+    //Comienza el bucle
     for (_ <- 0 until stop) {
+        //Realizo las búsquedas
         search = mejores.map(x => simulate(x))
 
+        //Obtengo todas las soluciones ordenadas
         mejores = (search ++ mejores).sortBy(_.cost)
-        val mejores_ok: Array[Solution] = mejores.take(10)
 
+        //Me quedo con las mejores
+        val mejores_ok: Array[Solution] = mejores.take(10)
         mejores = mejores.sparkContext.parallelize(mejores_ok)
       }
 

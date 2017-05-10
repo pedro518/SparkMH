@@ -8,7 +8,7 @@ package QAP
     *  @param cost Coste de la solución
     *
     */
-class Solution(var vals: Vector[Int], var cost: Int) extends Serializable {
+class Solution(var vals: Vector[Int], var cost: Int) extends Serializable with Ordered[Solution] {
 
   /** Crea una solución con su permutación
     *
@@ -113,6 +113,19 @@ class Solution(var vals: Vector[Int], var cost: Int) extends Serializable {
     ret.toList
   }
 
+    /** Genera num vecinos de esta solución
+      *
+      *  @param instancia Instancia del problema de la que forma parte la solución
+      *  @param num Número de vecinos a generar
+      *  @return Lista con las num soluciones vecinas de esta solución
+      */
+    def neightborhood(instancia: Instance, num: Int): List[Solution] = {
+      val ret = Array.ofDim[Solution](num)
+      for (i <- 0 until num) ret(i) = this.neightbor(instancia)
+
+      ret.toList
+    }
+
   /** Sobrecarga del método toString para mostrar los datos de la solución
     *
     *  @return String con la permutación y el costo de la solución
@@ -128,7 +141,7 @@ class Solution(var vals: Vector[Int], var cost: Int) extends Serializable {
     *  @param other Solución con la que comprar
     *  @return true si el costo es menor que el de other, falso en otro caso
     */
-  def <(other: Solution): Boolean ={
+  override def <(other: Solution): Boolean ={
     cost < other.cost
   }
 
@@ -137,8 +150,12 @@ class Solution(var vals: Vector[Int], var cost: Int) extends Serializable {
     *  @param other Solución con la que comprar
     *  @return true si el costo es mayor que el de other, falso en otro caso
     */
-  def >(other: Solution): Boolean ={
+  override def >(other: Solution): Boolean ={
     cost > other.cost
   }
+
+  def ==(other: Solution)  : Boolean = vals == other.vals
+
+    def compare(that: Solution): Int = this.cost compare that.cost
 }
 

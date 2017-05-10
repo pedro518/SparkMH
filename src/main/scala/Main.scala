@@ -1,4 +1,4 @@
-import QAP.{Instance, Simulated_Annealing, Solution}
+import QAP._
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkConf
 import org.apache.spark.rdd.RDD
@@ -15,37 +15,38 @@ object Main {
 
       sys.exit()
     }
-    val instancia = new Instance(args(0))
-    val simulated_Annealing = new Simulated_Annealing(instancia)
 
+    val instancia = new Instance(args(0))
+
+
+    val tabu_search = new Tabu_Search(instancia)
 
     val sc = new SparkContext(new SparkConf().setMaster("local").setAppName("Spark Annealing"))
     val sols_ale: RDD[Solution] = sc.parallelize(instancia.Random_sol(args(1).toInt))
 
     var now = System.nanoTime
-    val search= simulated_Annealing.simulate(instancia.Random_sol())
+    val search= tabu_search.search(instancia.Random_sol())
     val elapsed1 = (System.nanoTime - now).toFloat / 1000000000f
     now = System.nanoTime
-    val search_MA= simulated_Annealing.search_MA(sols_ale)
+    val search_MTS= tabu_search.search_MTS(sols_ale)
     val elapsed2 = (System.nanoTime - now).toFloat / 1000000000f
     now = System.nanoTime
-    val search_MA_REP= simulated_Annealing.search_MA_REP(sols_ale,10)
+    val search_MTS_REP= tabu_search.search_MTS_REP(sols_ale,10)
     val elapsed3 = (System.nanoTime - now).toFloat/1000000000f
 
 
     sc.stop()
-    println("Simple Simulate:")
+    println("Simple Tabú Search:")
     println(search)
-    println("Tiempo: " + elapsed1)
+    println("Tiempo: " + elapsed1 + " segundos")
 
-    println("MA Simulate:")
-    println(search_MA)
-    println("Tiempo: " + elapsed2)
+    println("Multi Tabú Search:")
+    println(search_MTS)
+    println("Tiempo: " + elapsed2 + " segundos")
 
-    println("MA REP Simulate:")
-    println(search_MA_REP)
-    println("Tiempo: " + elapsed3)
-
+    println("Multi REP Tabú Search:")
+    println(search_MTS_REP)
+    println("Tiempo: " + elapsed3 + " segundos")
 
   }
 }
